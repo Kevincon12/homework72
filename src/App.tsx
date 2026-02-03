@@ -1,12 +1,15 @@
 import './App.css'
 import {Route, Routes, Navigate} from "react-router-dom";
 import AdminDishes from "./components/AdminDishes/AdminDishes.tsx";
+import AdminDishForm from "./components/AdminDishForm/AdminDishForm.tsx";
 
 const App = () => (
     <>
         <Routes>
             <Route path="/admin" element={<Navigate to="/admin/dishes" />} />
             <Route path="/admin/dishes" element={<AdminDishes />} />
+            <Route path="/admin/dishes/new" element={<AdminDishForm />} />
+            <Route path="/admin/dishes/edit/:id" element={<AdminDishForm />} />
         </Routes>
     </>
 );

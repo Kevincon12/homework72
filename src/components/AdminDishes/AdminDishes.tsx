@@ -2,7 +2,7 @@ import {useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../app/store';
 import {useEffect} from "react";
-import {fetchDishes} from "../../features/dishesSlice.ts";
+import {deleteDishAsync, fetchDishes} from "../../features/dishesSlice.ts";
 
 const AdminDishes = () => {
     const navigate = useNavigate();
@@ -12,6 +12,11 @@ const AdminDishes = () => {
     useEffect(() => {
         dispatch(fetchDishes());
     }, [dispatch]);
+
+    const handleDelete = async (dishId: string) => {
+        await dispatch(deleteDishAsync(dishId));
+        dispatch(fetchDishes());
+    };
 
     return (
         <div className='container p-2'>
@@ -24,7 +29,10 @@ const AdminDishes = () => {
             </header>
 
             <h1>Dishes</h1>
-            <button className='btn btn-primary mb-3'>Add new dish</button>
+            <button
+                className='btn btn-primary mb-3'
+                onClick={() => navigate('/admin/dishes/new')}
+            >Add new dish</button>
 
             {loading && (
                 <div className="d-flex justify-content-center my-4">
@@ -51,7 +59,7 @@ const AdminDishes = () => {
 
                             <button
                                 className='btn btn-sm btn-danger'
-                                onClick={() => dispatch(deleteDish(dish.id))}
+                                onClick={() => handleDelete(dish.id)}
                             >
                                 Delete
                             </button>
