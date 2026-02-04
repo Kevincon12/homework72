@@ -102,5 +102,5 @@ export const dishesSlice = createSlice({
     }
 });
 
-export const { addDish, editDish, deleteDish, setLoading } = dishesSlice.actions;
+export const { setLoading } = dishesSlice.actions;
 export const dishesReducer = dishesSlice.reducer;

@@ -1,13 +1,13 @@
 import {useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
-import type { RootState } from '../../app/store';
+import type {AppDispatch, RootState} from '../../app/store';
 import {useEffect} from "react";
 import {deleteDishAsync, fetchDishes} from "../../features/dishesSlice.ts";
 
 const AdminDishes = () => {
     const navigate = useNavigate();
     const { items, loading } = useSelector((state: RootState) => state.dishes);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         dispatch(fetchDishes());

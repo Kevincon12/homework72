@@ -3,12 +3,13 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {addDishAsync, editDishAsync} from "../../features/dishesSlice.ts";
 import { useParams } from "react-router-dom";
+import type {AppDispatch, RootState} from "../../app/store.ts";
 
 
 const AdminDishForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { items } = useSelector((state: RootState) => state.dishes);
 
     const [title, setTitle] = useState('');
