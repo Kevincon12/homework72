@@ -18,6 +18,10 @@ const Home = () => {
 
     const [order, setOrder] = useState<OrderItem[]>([]);
 
+    const [showModal, setShowModal] = useState(false);
+
+    const total = order.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
     useEffect(() => {
         dispatch(fetchDishes());
     }, [dispatch]);
@@ -37,7 +41,22 @@ const Home = () => {
         });
     };
 
-    console.log(order);
+    const buildOrderPayload = (order: OrderItem[]): Record<string, number> => {
+        const payload: Record<string, number> = {};
+        for (const i in order) {
+            const item = order[i];
+            payload[item.dishId] = item.quantity;
+        }
+        return payload;
+    };
+
+    const sendOrder = () => {
+        const payload = buildOrderPayload(order);
+        console.log(payload);
+
+        setOrder([]);
+        setShowModal(false);
+    };
 
     return (
         <div className='container p-2'>
@@ -68,8 +87,41 @@ const Home = () => {
                 ))}
             </div>
 
-            <div>Order total <strong>som</strong></div>
-            <button className='btn btn-primary text-center mt-2'>Checkout</button>
+            {showModal && (
+                <div className="modal show d-block" tabIndex={-1}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Your Order</h5>
+                                <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                            </div>
+                            <div className="modal-body">
+                                {order.map(item => (
+                                    <div key={item.dishId} className="d-flex justify-content-between">
+                                        <span>{item.title} x {item.quantity}</span>
+                                        <span>{item.price * item.quantity} som</span>
+                                    </div>
+                                ))}
+                                <hr />
+                                <div className="d-flex justify-content-between">
+                                    <strong>Total:</strong>
+                                    <strong>{total} som</strong>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                                <button className="btn btn-primary" onClick={sendOrder}>Order</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <div>Order total <strong>{total}som</strong></div>
+            <button
+                className='btn btn-primary text-center mt-2'
+                onClick={() => setShowModal(true)}
+            >Checkout</button>
         </div>
     );
 };
