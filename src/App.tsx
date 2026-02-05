@@ -3,6 +3,7 @@ import {Route, Routes, Navigate} from "react-router-dom";
 import AdminDishes from "./components/AdminDishes/AdminDishes.tsx";
 import AdminDishForm from "./components/AdminDishForm/AdminDishForm.tsx";
 import Home from "./components/Home/Home.tsx";
+import AdminOrders from "./components/AdminOrders/AdminOrders.tsx";
 
 const App = () => (
     <>
@@ -12,6 +13,7 @@ const App = () => (
             <Route path="/admin/dishes" element={<AdminDishes />} />
             <Route path="/admin/dishes/new" element={<AdminDishForm />} />
             <Route path="/admin/dishes/edit/:id" element={<AdminDishForm />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
         </Routes>
     </>
 );

@@ -37,6 +37,31 @@ export const createOrderAsync = createAsyncThunk<
     }
 );
 
+export const getOrdersAsync = createAsyncThunk<
+    Order[],
+    void
+>(
+    'orders/fetchOrders',
+    async () => {
+        const { data } = await axios.get(`${BASE_URL}/orders.json`);
+
+        if (!data) return [];
+
+        return Object.keys(data).map((id) => ({
+            id,
+            items: data[id],
+        }));
+    }
+);
+
+export const deleteOrderAsync = createAsyncThunk<string, string>(
+    'orders/completeOrder',
+    async (orderId) => {
+        await axios.delete(`${BASE_URL}/orders/${orderId}.json`);
+        return orderId;
+    }
+);
+
 export const ordersSlice = createSlice({
     name: 'orders',
     initialState,
@@ -55,10 +80,24 @@ export const ordersSlice = createSlice({
             })
             .addCase(createOrderAsync.rejected, (state) => {
                 state.loading = false;
+            })
+            .addCase(getOrdersAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getOrdersAsync.fulfilled, (state, action) => {
+                state.items = action.payload;
+                state.loading = false;
+            })
+            .addCase(getOrdersAsync.rejected, (state) => {
+                state.loading = false;
+            })
+            .addCase(deleteOrderAsync.fulfilled, (state, action) => {
+                state.items = state.items.filter(
+                    (order) => order.id !== action.payload
+                );
             });
     },
 });
-
 
 export const ordersReducer = ordersSlice.reducer;
 export const { setLoading } = ordersSlice.actions;
