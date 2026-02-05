@@ -3,6 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import type {AppDispatch, RootState} from "../../app/store.ts";
 import {fetchDishes} from "../../features/dishesSlice.ts";
+import {createOrderAsync} from "../../features/ordersSlice.ts";
 
 interface OrderItem {
     dishId: string;
@@ -51,8 +52,10 @@ const Home = () => {
     };
 
     const sendOrder = () => {
+        if (order.length === 0) return;
+
         const payload = buildOrderPayload(order);
-        console.log(payload);
+        dispatch(createOrderAsync({ items: payload }));
 
         setOrder([]);
         setShowModal(false);

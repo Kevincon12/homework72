@@ -1,4 +1,5 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, type PayloadAction} from "@reduxjs/toolkit";
+import axios from "axios";
 
 export interface OrderItem {
     id: string;
@@ -15,22 +16,49 @@ export interface OrdersState {
     loading: boolean;
 }
 
+export interface CreateOrderPayload {
+    items: Record<string, number>;
+}
+
 const initialState: OrdersState = {
     items: [],
     loading: false,
 }
 
+const BASE_URL = 'https://iliahomework72-default-rtdb.europe-west1.firebasedatabase.app';
+
+export const createOrderAsync = createAsyncThunk<
+    void,
+    CreateOrderPayload
+>(
+    'orders/createOrder',
+    async ({ items }) => {
+        await axios.post(`${BASE_URL}/orders.json`, items);
+    }
+);
+
 export const ordersSlice = createSlice({
     name: 'orders',
     initialState,
     reducers: {
-        setOrders: (state, action: PayloadAction<Order[]>) => {},
-        completeOrder: (state, action: PayloadAction<string>) => {},
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
     },
-})
+    extraReducers: (builder) => {
+        builder
+            .addCase(createOrderAsync.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(createOrderAsync.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(createOrderAsync.rejected, (state) => {
+                state.loading = false;
+            });
+    },
+});
+
 
 export const ordersReducer = ordersSlice.reducer;
-export const { setOrders, completeOrder, setLoading } = ordersSlice.actions;
+export const { setLoading } = ordersSlice.actions;
